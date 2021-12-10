@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+
 }
 
 android {
@@ -132,5 +134,4 @@ dependencies {
 
     //easy permission
     implementation 'pub.devrel:easypermissions:3.0.0'
-
 }

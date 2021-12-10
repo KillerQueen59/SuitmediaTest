@@ -21,15 +21,23 @@ import android.graphics.Canvas
 import androidx.core.content.ContextCompat
 
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import androidx.core.view.isVisible
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.Marker
 import com.ojanbelajar.suitmediatest.R
+import com.ojanbelajar.suitmediatest.adapter.SwipeEventAdapter
+import org.jetbrains.anko.support.v4.toast
 
 
 class EventMapFragment: Fragment() , OnMapReadyCallback {
 
+    var pick: String = "Iconfest"
     private lateinit var binding : FragmentEventMapBinding
-    lateinit var adapter: EventAdapter
+    lateinit var adapter: SwipeEventAdapter
+    private var map: GoogleMap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,17 +51,75 @@ class EventMapFragment: Fragment() , OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.mapView.onCreate(savedInstanceState)
-        binding.mapView.getMapAsync(this)
-        adapter = EventAdapter(requireActivity())
-        adapter.setData(setDummyData())
-        setupRV()
+        binding.mapView.getMapAsync{
+            map = it
+            it.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(40.712776,-74.005974),15f))
+            addMarker()
+        }
+        adapter = SwipeEventAdapter(requireActivity(),setDummyData())
+        binding.vpEvent.adapter = adapter
+        binding.vpEvent.offscreenPageLimit = 1
+        binding.vpEvent.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                val data = setDummyData()
+                pick = data[position].name
+                val latlng = LatLng(data[position].lat,data[position].long)
+                binding.progress.isVisible = true
+                Handler().postDelayed({
+                    map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng,15f))
+                    binding.progress.isVisible = false
+                }, 2000)
+            }
 
+            override fun onPageSelected(position: Int) {
+
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+        })
     }
 
-    fun setupRV(){
-        binding.rvEvent.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.HORIZONTAL,false)
-        binding.rvEvent.adapter = adapter
+    fun addMarker(){
+        val data = setDummyData()
+
+        for(d in data){
+            val place = LatLng(d.lat,d.long)
+            map!!.addMarker(
+                MarkerOptions()
+                    .position(place)
+                    .title("Marker in ${d.name}"))
+        }
+
+//        when(pick){
+//            "Iconfest" -> {
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(iconfest));
+//            }
+//            "ITToday" -> {
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(ittoday));
+//            }
+//            "Paradigma" -> {
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(paradigma));
+//            }
+//            "Vision" -> {
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(vision));
+//            }
+//            "SynchroFEST" -> {
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(synchro));
+//            }
+//            "EduFest" -> {
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(edufest));
+//            }
+//            "Youtube Rewind" -> {
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(youtube));
+//            }
+//        }
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -99,15 +165,6 @@ class EventMapFragment: Fragment() , OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
 
-        val data = setDummyData()
-        for(d in data){
-            val place = LatLng(d.lat,d.long)
-            googleMap.addMarker(
-                MarkerOptions()
-                    .position(place)
-                    .title("Marker in ${d.name}")
-            )
-        }
     }
 
 

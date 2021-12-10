@@ -2,8 +2,10 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="180dp">
+    android:layout_height="180dp"
+    >
     <ImageView
+        android:id="@+id/iv_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <TextView
