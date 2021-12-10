@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.ojanbelajar.suitmediatest.R
 import com.ojanbelajar.suitmediatest.data.remote.Event
 import com.ojanbelajar.suitmediatest.data.remote.Guest
 import com.ojanbelajar.suitmediatest.databinding.ItemEventBinding
@@ -43,7 +45,7 @@ class GuestAdapter(private val context: Context) : RecyclerView.Adapter<GuestAda
         val monthFormat = SimpleDateFormat("MM")
         val month = monthFormat.format(date)
         val session = SessionManagement(context)
-        holder.bind(guest)
+        holder.bind(guest,context)
         holder.itemView.setOnClickListener {
             context.alert("Bulan lahir ke ${checkPrime(month.toInt())}") {
                 yesButton {
@@ -81,9 +83,26 @@ class GuestAdapter(private val context: Context) : RecyclerView.Adapter<GuestAda
 
     class GuestAdapterViewHolder(private val binding: ItemGuestBinding): RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
-        fun bind(guest: Guest){
+        fun bind(guest: Guest,context: Context){
             binding.tvName.text = guest.name
             binding.tvDate.text = guest.birthdate
+            when(guest.id){
+                1 -> {
+                    Glide.with(context).load(R.drawable.picture1).into(binding.ivGuest)
+                }
+                2 -> {
+                    Glide.with(context).load(R.drawable.picture8).into(binding.ivGuest)
+                }
+                3 -> {
+                    Glide.with(context).load(R.drawable.picture3).into(binding.ivGuest)
+                }
+                4 -> {
+                    Glide.with(context).load(R.drawable.picture4).into(binding.ivGuest)
+                }
+                5 -> {
+                    Glide.with(context).load(R.drawable.picture7).into(binding.ivGuest)
+                }
+            }
         }
     }
 }

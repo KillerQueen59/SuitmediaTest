@@ -10,6 +10,7 @@ import com.ojanbelajar.suitmediatest.data.Resource
 import com.ojanbelajar.suitmediatest.data.remote.Guest
 import com.ojanbelajar.suitmediatest.databinding.ActivityGuestListBinding
 import dagger.hilt.android.AndroidEntryPoint
+import org.jetbrains.anko.support.v4.onRefresh
 import org.jetbrains.anko.toast
 
 
@@ -28,6 +29,12 @@ class GuestListActivity: AppCompatActivity() {
         adapter = GuestAdapter(this)
         getGuest()
         setRv()
+
+        binding.swipeRefresh.onRefresh {
+            binding.swipeRefresh.isRefreshing = false
+            data.clear()
+            getGuest()
+        }
     }
 
     fun getGuest(){

@@ -6,6 +6,8 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.ojanbelajar.suitmediatest.R
 import com.ojanbelajar.suitmediatest.data.remote.Event
 import com.ojanbelajar.suitmediatest.databinding.ItemEventBinding
 import com.ojanbelajar.suitmediatest.ui.EventGuestActivity
@@ -30,7 +32,7 @@ class EventAdapter(private val context: Context) : RecyclerView.Adapter<EventAda
     override fun onBindViewHolder(holder: EventAdapterViewHolder, position: Int) {
         val event = listData[position]
         val session = SessionManagement(context)
-        holder.bind(event)
+        holder.bind(event,context)
         holder.itemView.setOnClickListener {
             session.updateEvent(event.name)
             val intent = Intent(context, EventGuestActivity::class.java)
@@ -43,9 +45,10 @@ class EventAdapter(private val context: Context) : RecyclerView.Adapter<EventAda
 
     class EventAdapterViewHolder(private val binding: ItemEventBinding): RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
-        fun bind(event: Event){
+        fun bind(event: Event, context: Context){
             binding.tvNama.text = event.name
             binding.tvTanggal.text = event.date
+            Glide.with(context).load(event.image).into(binding.ivEvent)
         }
     }
 }

@@ -10,6 +10,7 @@ import org.jetbrains.anko.yesButton
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+    private var ready = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,16 +18,28 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         val session = SessionManagement(this)
         val name = binding.etName.text
+
+
         binding.btnNext.setOnClickListener {
-            alert("Nama merupakan kata ${checkPalindrome(name.toString())}") {
-                yesButton {
-                    session.updateName(name.toString())
-                    session.clearSession()
-                    sendName()
-                }
-            }.show()
+            if (binding.etName.text.isNullOrEmpty()){
+                binding.etName.error = "Tidak Boleh Kosong"
+                ready = false
+            }else {
+                ready = true
+            }
+            if (ready) {
+                alert("Nama merupakan kata ${checkPalindrome(name.toString())}") {
+                    yesButton {
+                        session.updateName(name.toString())
+                        session.clearSession()
+                        sendName()
+                    }
+                }.show()
+            }
         }
     }
+
+
 
     private fun sendName(){
         val intent = Intent(this@MainActivity, EventGuestActivity::class.java)

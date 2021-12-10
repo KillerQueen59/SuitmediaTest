@@ -24,6 +24,9 @@ class EventListActivity: AppCompatActivity() {
             else commitFragment(eventListFragment)
             page = !page
         }
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
     }
 
     private fun commitFragment(fragment: Fragment){
